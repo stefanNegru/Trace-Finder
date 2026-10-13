@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
@@ -22,6 +23,13 @@ public class Main {
         try {
             Map<String, Integer> rules = RuleReader.readRules(rulesFile);
             System.out.println("Loaded rules: " + rules);
+
+            List<RawLine> rawLines = LogReader.readLines(logFile);
+            System.out.println("Read " + rawLines.size() + " lines from log file.");
+            System.out.println(rawLines.get(1).lineNumber() + ": " + rawLines.get(1).content()); 
+            
+
+            ReportWriter.write(reportFile);
         } catch (IOException e) {
             System.err.println("Error reading rules file: " + e.getMessage());
             System.exit(1);

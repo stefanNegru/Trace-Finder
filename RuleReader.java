@@ -3,7 +3,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RuleReader {
@@ -11,7 +11,7 @@ public class RuleReader {
     public static Map<String, Integer> readRules(String filePath)
             throws IOException {
 
-        Map<String, Integer> rules = new HashMap<>();
+        Map<String, Integer> rules = new LinkedHashMap<>();
 
         try (BufferedReader reader = Files.newBufferedReader(Path.of(filePath))) {
             String header = reader.readLine();
