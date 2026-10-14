@@ -1,17 +1,14 @@
 package analysis;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import model.AnalysisResult;
 import model.FlaggedEntry;
 import model.LogEntry;
 import model.MalformedLine;
-import model.UnknownPattern;
 import model.SuspiciousIp;
+import model.UnknownPattern;
 
 public class Analyzer {
 
@@ -21,6 +18,15 @@ public class Analyzer {
     ) {
 
         Map<String, Integer> activitySummary = new HashMap<>();
+
+        for (LogEntry entry : entries) {
+            String level = entry.getLevel();
+
+            int count = activitySummary.getOrDefault(level, 0);
+            activitySummary.put(level, count + 1);
+        }
+        
+
         List<FlaggedEntry> flaggedEntries = new ArrayList<>();
         List<UnknownPattern> unknownPatterns = new ArrayList<>();
         List<MalformedLine> malformedLines = new ArrayList<>();
