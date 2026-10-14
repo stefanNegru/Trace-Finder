@@ -1,9 +1,11 @@
+import analysis.Analyzer;
 import io.LogReader;
 import io.ReportWriter;
 import io.RuleReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import model.AnalysisResult;
 import model.RawLine;
 
 public class Main {
@@ -29,6 +31,8 @@ public class Main {
             System.out.println("Loaded rules: " + rules);
 
             List<RawLine> rawLines = LogReader.readLines(logFile);
+            AnalysisResult result = Analyzer.analyze(rawLines, rules);
+            System.out.println("Activity Summary: " + result.activitySummary());
             System.out.println("Read " + rawLines.size() + " lines from log file.");
             System.out.println(rawLines.get(1).lineNumber() + ": " + rawLines.get(1).content()); 
             
