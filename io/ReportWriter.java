@@ -6,15 +6,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import model.AnalysisResult;
+import model.FlaggedEntry;
+import model.MalformedLine;
+import model.SuspiciousIp;
+import model.UnknownPattern;
 
 public class ReportWriter {
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static void write(
-            String filePath
-            //AnalysisResult result,
-            //List<MalformedLine> malformedLines
+            String filePath,
+            AnalysisResult result
     ) throws IOException {
 
         try (BufferedWriter writer = Files.newBufferedWriter(
@@ -29,43 +35,43 @@ public class ReportWriter {
             writer.newLine();
             writer.newLine();
 
-            writeActivitySummary(writer);
-            writeFlaggedEntries(writer/*, result.flaggedEntries()*/);
-            writeSuspiciousIps(writer/*, result.suspiciousIps()*/);
-            writeUnknownPatterns(writer);
-            writeMalformedLines(writer);
+            writeActivitySummary(writer, result.activitySummary());
+            writeFlaggedEntries(writer, result.flaggedEntries());
+            writeSuspiciousIps(writer, result.suspiciousIps());
+            writeUnknownPatterns(writer, result.unknownPatterns());
+            writeMalformedLines(writer, result.malformedLines());
         }
     }
 
     private static void writeActivitySummary(
-            BufferedWriter writer
-            //Map<String, Integer> summary
+            BufferedWriter writer,
+            Map<String, Integer> summary
     ) throws IOException {
 
         writer.write("--- Activity Summary ---");
         writer.newLine();
 
-        /*if (summary.isEmpty()) {
+        if (summary.isEmpty()) {
             writer.write("None found");
         } else {
             for (Map.Entry<String, Integer> entry : summary.entrySet()) {
                 writer.write(entry.getKey() + ":  " + entry.getValue());
                 writer.newLine();
             }
-        }*/
+        }
 
         writer.newLine();
     }
 
     private static void writeFlaggedEntries(
-            BufferedWriter writer
-            //List<FlaggedEntry> entries
+            BufferedWriter writer,
+            List<FlaggedEntry> entries
     ) throws IOException {
 
         writer.write("--- Flagged Entries ---");
         writer.newLine();
 
-        /*if (entries.isEmpty()) {
+        if (entries.isEmpty()) {
             writer.write("None found");
             writer.newLine();
         } else {
@@ -73,20 +79,20 @@ public class ReportWriter {
                 writer.write(entry.originalLine());
                 writer.newLine();
             }
-        }*/
+        }
 
         writer.newLine();
     }
 
     private static void writeSuspiciousIps(
-            BufferedWriter writer
-            //List<SuspiciousIp> ips
+            BufferedWriter writer,
+            List<SuspiciousIp> ips
     ) throws IOException {
 
         writer.write("--- Suspicious Activity by IP ---");
         writer.newLine();
 
-        /*if (ips.isEmpty()) {
+        if (ips.isEmpty()) {
             writer.write("None found");
             writer.newLine();
         } else {
@@ -95,20 +101,20 @@ public class ReportWriter {
                         + ip.entryCount() + " entries");
                 writer.newLine();
             }
-        }*/
+        }
 
         writer.newLine();
     }
 
     private static void writeUnknownPatterns(
-            BufferedWriter writer
-            //List<UnknownPattern> patterns
+            BufferedWriter writer,
+            List<UnknownPattern> patterns
     ) throws IOException {
 
         writer.write("--- Unknown Patterns ---");
         writer.newLine();
 
-        /*if (patterns.isEmpty()) {
+        if (patterns.isEmpty()) {
             writer.write("None found");
             writer.newLine();
         } else {
@@ -117,20 +123,20 @@ public class ReportWriter {
                         + ":  " + pattern.content());
                 writer.newLine();
             }
-        }*/
+        }
 
         writer.newLine();
     }
 
     private static void writeMalformedLines(
-            BufferedWriter writer
-            //List<MalformedLine> lines
+            BufferedWriter writer,
+            List<MalformedLine> lines
     ) throws IOException {
 
         writer.write("--- Malformed Lines ---");
         writer.newLine();
 
-        /*if (lines.isEmpty()) {
+        if (lines.isEmpty()) {
             writer.write("None found");
             writer.newLine();
         } else {
@@ -139,6 +145,6 @@ public class ReportWriter {
                         + ": " + line.content());
                 writer.newLine();
             }
-        }*/
+        }
     }
 }
