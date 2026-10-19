@@ -25,6 +25,10 @@ public class Analyzer {
         Map<String, Integer> rules
     ) {
         Map<String, Integer> activitySummary = new LinkedHashMap<>();
+        for (String ruleLevel : rules.keySet()) {
+            activitySummary.put(ruleLevel, 0);
+        }
+
         List<FlaggedEntry> flaggedEntries = new ArrayList<>();
         List<UnknownPattern> unknownPatterns = new ArrayList<>();
         List<MalformedLine> malformedLines = new ArrayList<>();
@@ -66,6 +70,14 @@ public class Analyzer {
 
             int count = activitySummary.getOrDefault(level, 0);
             activitySummary.put(level, count + 1);
+
+            int severityScore = rules.get(level);
+
+            if (severityScore >= 3) {
+                flaggedEntries.add(
+                        new FlaggedEntry(rawLine.content(), severityScore)
+                );
+            }
         }
 
         
