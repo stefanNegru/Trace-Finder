@@ -21,22 +21,22 @@ public class Main {
         String rulesFile = args[1];
         String reportFile = args[2];
 
-        System.out.println("Log file: " + logFile);
-        System.out.println("Rules file: " + rulesFile);
-        System.out.println("Report file: " + reportFile);
+        //System.out.println("Log file: " + logFile);
+        //System.out.println("Rules file: " + rulesFile);
+        //System.out.println("Report file: " + reportFile);
 
         
         try {
             Map<String, Integer> rules = RuleReader.readRules(rulesFile);
-            System.out.println("Loaded rules: " + rules);
+            //System.out.println("Loaded rules: " + rules);
 
-            System.out.println("\n------------------------------------------------------");
+            //System.out.println("\n------------------------------------------------------");
 
             List<RawLine> rawLines = LogReader.readLines(logFile);
             AnalysisResult result = Analyzer.analyze(rawLines, rules);
 
-            System.out.println("Read " + rawLines.size() + " lines from log file.");
-            System.out.println(rawLines.get(1).lineNumber() + ": " + rawLines.get(1).content()); 
+            //System.out.println("Read " + rawLines.size() + " lines from log file.");
+            //System.out.println(rawLines.get(1).lineNumber() + ": " + rawLines.get(1).content()); 
             
 
             ReportWriter.write(reportFile, result);

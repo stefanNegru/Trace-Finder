@@ -4,9 +4,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import model.AnalysisResult;
 import model.FlaggedEntry;
 import model.MalformedLine;
@@ -33,6 +37,9 @@ public class Analyzer {
         List<UnknownPattern> unknownPatterns = new ArrayList<>();
         List<MalformedLine> malformedLines = new ArrayList<>();
         List<SuspiciousIp> suspiciousIps = new ArrayList<>();
+
+        Map<String, Integer> entriesByIp = new HashMap<>();
+        Set<String> suspiciousIpSet = new HashSet<>();
             
 
         for (RawLine rawLine : rawLines) {
@@ -61,6 +68,11 @@ public class Analyzer {
                 continue;
             }
 
+            entriesByIp.put(
+                    sourceIp,
+                    entriesByIp.getOrDefault(sourceIp, 0) + 1
+            );
+
             if (!rules.containsKey(level)) {
                 unknownPatterns.add(
                         new UnknownPattern(rawLine.lineNumber(), rawLine.content())
@@ -77,12 +89,30 @@ public class Analyzer {
                 flaggedEntries.add(
                         new FlaggedEntry(rawLine.content(), severityScore)
                 );
+                suspiciousIpSet.add(sourceIp);
             }
         }
 
-        
+        flaggedEntries.sort(
+            Comparator.comparingInt(
+                FlaggedEntry::severityScore
+            ).reversed()
+        );
 
-        
+        for (String ip : suspiciousIpSet) {
+            suspiciousIps.add(
+                    new SuspiciousIp(
+                            ip,
+                            entriesByIp.get(ip)
+                    )
+            );
+        }
+
+        suspiciousIps.sort(
+                Comparator.comparingInt(
+                        SuspiciousIp::entryCount
+                ).reversed()
+        );
 
         return new AnalysisResult(
                 activitySummary,
