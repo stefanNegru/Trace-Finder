@@ -10,9 +10,8 @@ Java must be installed on your computer. It must be able to run the provided `tr
 
 Open a terminal in the project folder and run:
 
-```bash
-java -jar tracefinder.jar logs.txt rules.csv report.txt
-```
+  java -jar tracefinder.jar logs.txt rules.csv report.txt 
+
 
 The three file paths must be in this order:
 
@@ -26,15 +25,11 @@ You can use different file names or locations. Keep the same order.
 
 Each line should have five parts, separated by the `|` character:
 
-```text
-date and time | level | source IP | target | action
-```
+   date and time | level | source IP | target | action
 
 Example:
 
-```text
 2024-03-15 02:14:08 | INFO | 192.168.1.45 | /login | success
-```
 
 A blank line, a line with the wrong number of parts, or a line with an invalid date and time is marked as malformed. TraceFinder records it and continues with the next line.
 
@@ -42,18 +37,15 @@ A blank line, a line with the wrong number of parts, or a line with an invalid d
 
 The rules file is a CSV file. It must start with this header:
 
-```csv
-level,severity_score
-```
+   level,severity_score
 
 Each row gives a log level and its score:
 
-```csv
 INFO,1
 WARN,3
 ERROR,5
 ALERT,9
-```
+
 
 The level must match exactly. For example, `INFO` and `info` are treated as different levels.
 
