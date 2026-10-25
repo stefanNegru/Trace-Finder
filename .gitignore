@@ -1,3 +1,4 @@
 report.txt
 out/
 *.class
+target/
