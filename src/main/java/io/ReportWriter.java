@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+
 import model.AnalysisResult;
 import model.FlaggedEntry;
 import model.MalformedLine;
@@ -20,7 +21,9 @@ public class ReportWriter {
 
     public static void write(
             String filePath,
-            AnalysisResult result
+            AnalysisResult result,
+            LocalDateTime startTime,
+            LocalDateTime endTime
     ) throws IOException {
 
         try (BufferedWriter writer = Files.newBufferedWriter(
@@ -32,6 +35,19 @@ public class ReportWriter {
 
             writer.write("Generated: "
                     + LocalDateTime.now().format(FORMATTER));
+            writer.newLine();
+
+            writer.write("Time Window: ");
+
+            if (startTime != null && endTime != null) {
+                writer.write(
+                        startTime.format(FORMATTER)
+                        + " to "
+                        + endTime.format(FORMATTER));
+            } else {
+                writer.write("full file");
+            }
+
             writer.newLine();
             writer.newLine();
 

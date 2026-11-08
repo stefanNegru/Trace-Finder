@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import model.AnalysisResult;
 import model.FlaggedEntry;
 import model.MalformedLine;
@@ -26,7 +27,9 @@ public class Analyzer {
 
     public static AnalysisResult analyze(
         List<RawLine> rawLines,
-        Map<String, Integer> rules
+        Map<String, Integer> rules,
+        LocalDateTime startTime,
+        LocalDateTime endTime
     ) {
         Map<String, Integer> activitySummary = new LinkedHashMap<>();
         for (String ruleLevel : rules.keySet()) {
@@ -55,16 +58,26 @@ public class Analyzer {
             String timestamp = fields[0].trim();
             String level = fields[1].trim();
             String sourceIp = fields[2].trim();
-            String target = fields[3].trim();
-            String action = fields[4].trim();
+            //String target = fields[3].trim();
+            //String action = fields[4].trim();
 
+            LocalDateTime parsedTimestamp;
+            
             try {
-                LocalDateTime.parse(
+                parsedTimestamp = LocalDateTime.parse(
                         timestamp,
                         TIMESTAMP_FORMATTER
                 );
             } catch (DateTimeParseException e) {
                 malformedLines.add(new MalformedLine(rawLine.lineNumber(), rawLine.content()));
+                continue;
+            }
+
+            if (startTime != null && parsedTimestamp.isBefore(startTime)) {
+                continue;
+            }
+
+            if (endTime != null && !parsedTimestamp.isBefore(endTime)) {
                 continue;
             }
 
