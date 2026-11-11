@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import exception.OutputFileException;
 import model.AnalysisResult;
 import model.FlaggedEntry;
 import model.MalformedLine;
@@ -24,7 +25,7 @@ public class ReportWriter {
             AnalysisResult result,
             LocalDateTime startTime,
             LocalDateTime endTime
-    ) throws IOException {
+    ) {
 
         try (BufferedWriter writer = Files.newBufferedWriter(
                 Path.of(filePath),
@@ -56,6 +57,13 @@ public class ReportWriter {
             writeSuspiciousIps(writer, result.suspiciousIps());
             writeUnknownPatterns(writer, result.unknownPatterns());
             writeMalformedLines(writer, result.malformedLines());
+            
+        } catch (IOException e) {
+            throw new OutputFileException(
+                    "Could not write report file: " + filePath
+                            + ". Reason: " + e.getMessage(),
+                    e
+            );
         }
     }
 

@@ -7,10 +7,11 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import exception.RuleFileException;
+
 public class RuleReader {
 
-    public static Map<String, Integer> readRules(String filePath)
-            throws IOException {
+    public static Map<String, Integer> readRules(String filePath) {
 
         Map<String, Integer> rules = new LinkedHashMap<>();
 
@@ -18,18 +19,23 @@ public class RuleReader {
             String header = reader.readLine();
 
             if (!"level,severity_score".equals(header)) {
-                throw new IOException(
-                    "Invalid CSV header in rules file: " + filePath
+                throw new RuleFileException(
+                        "Invalid CSV header in rules file: " + filePath
                 );
             }
 
             String line;
+            int lineNumber = 1;
+
             while ((line = reader.readLine()) != null) {
+                lineNumber++;
+
                 String[] fields = line.split(",", -1);
 
                 if (fields.length != 2) {
-                    throw new IOException(
-                        "Invalid CSV row in rules file: " + line
+                    throw new RuleFileException(
+                            "Invalid CSV row at line " + lineNumber
+                                    + " in rules file: " + filePath
                     );
                 }
 
@@ -39,23 +45,35 @@ public class RuleReader {
                 try {
                     score = Integer.parseInt(fields[1].trim());
                 } catch (NumberFormatException e) {
-                    throw new IOException(
-                        "Invalid severity_score in rules file: " + line, e
+                    throw new RuleFileException(
+                            "Invalid severity_score at line " + lineNumber
+                                    + " in rules file: " + filePath,
+                            e
                     );
                 }
 
                 if (level.isEmpty()) {
-                    throw new IOException(
-                        "Empty level in rules file: " + line
+                    throw new RuleFileException(
+                            "Empty level at line " + lineNumber
+                                    + " in rules file: " + filePath
                     );
                 }
 
                 if (rules.putIfAbsent(level, score) != null) {
-                    throw new IOException(
-                        "Duplicate level in rules file: " + level
+                    throw new RuleFileException(
+                            "Duplicate level '" + level
+                                    + "' at line " + lineNumber
+                                    + " in rules file: " + filePath
                     );
                 }
             }
+
+        } catch (IOException e) {
+            throw new RuleFileException(
+                    "Could not read rules file: " + filePath
+                            + ". Reason: " + e.getMessage(),
+                    e
+            );
         }
 
         return rules;
