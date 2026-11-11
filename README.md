@@ -156,42 +156,51 @@ Time Window: full file
 
 ## Testing
 
-The project includes automated tests covering the existing functionality and the time window filtering feature.
+The project includes automated tests using JUnit 5.
 
-The boundary tests cover the following cases:
-
-| Test case                          | Why it matters                                                              |
-| ---------------------------------- | --------------------------------------------------------------------------- |
-| Entry exactly at the start         | Verifies that the start boundary is inclusive.                              |
-| Entry exactly at the end           | Verifies that the end boundary is exclusive.                                |
-| Entry inside the window            | Confirms that entries within the selected interval are analysed.            |
-| Entry outside the window           | Ensures that entries outside the interval are excluded.                     |
-| Empty time window                  | Verifies that a report is still generated when no entries match.            |
-| Equal start and end timestamps     | Checks that a zero-length window is valid and contains no entries.          |
-| Reversed time window               | Ensures that a start timestamp later than the end is rejected.              |
-| Invalid timestamp                  | Verifies that unreadable timestamps are handled cleanly.                    |
-| Malformed lines outside the window | Ensures that malformed lines are still recorded regardless of filtering.    |
-| Original line numbers              | Checks that filtering does not change the line numbers of unknown patterns. |
-
-Existing TraceFinder tests are also maintained to ensure that the original functionality continues to work.
-
-Run the test suite using:
+Run all tests with:
 
 ```bash
-mvn clean test
+mvn test
 ```
+
+The test suite covers the original TraceFinder functionality and the time window filtering feature.
+
+### Time window edge cases
+
+| Test case                          | Test method                                                          | Why it matters                                                                         |
+| ---------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Full-file analysis                 | `acceptsThreeArguments`                                              | Verifies that the application supports analysis without a time window.                 |
+| Time-window analysis               | `acceptsFiveArguments`                                               | Verifies that the application accepts a time-window configuration.                     |
+| Empty time window                  | `emptyTimeWindowProducesCompleteReportWithNoFindings`                | Verifies that a report is still generated when no entries match.                       |
+| Equal start and end timestamps     | `equalStartAndEndProducesCompleteReportWithNoFindings`               | Checks that a zero-length window is valid and contains no entries.                     |
+| Reversed time window               | `rejectsReversedTimeWindow`                                          | Ensures that a start timestamp later than the end is rejected.                         |
+| Invalid start timestamp            | `rejectsInvalidStartTimestamp`                                       | Verifies that an invalid start timestamp is rejected.                                  |
+| Invalid end timestamp              | `rejectsInvalidEndTimestamp`                                         | Verifies that an invalid end timestamp is rejected.                                    |
+| Malformed lines outside the window | `timeWindowDoesNotChangeMalformedLines`                              | Ensures that malformed lines are recorded identically with and without time filtering. |
+| Missing rules file                 | `rejectsMissingRulesFile`                                            | Verifies that a missing rules file is handled with an error.                           |
+| Missing log file                   | `rejectsMissingLogFile`                                              | Verifies that a missing log file is handled with an error.                             |
+| Invalid argument count             | `rejectsTwoArguments`, `rejectsFourArguments`, `rejectsSixArguments` | Ensures that unsupported CLI argument counts are rejected.                             |
+
+Additional CLI tests verify argument validation, file handling, and report generation.
+
+The test suite also covers parsing, rulebook matching, counting, grouping, flagging, and report formatting.
+
+Run the tests from the project root using `mvn test`.
 
 ## Code coverage
 
 Code coverage is measured using JaCoCo.
 
-Generate the coverage report using:
+Generate the coverage report by running:
 
 ```bash
 mvn clean verify
 ```
 
-The HTML report is generated at:
+This command cleans the previous build, runs the test suite, and generates the JaCoCo report.
+
+The HTML report is available at:
 
 ```text
 target/site/jacoco/index.html
@@ -199,14 +208,33 @@ target/site/jacoco/index.html
 
 Open this file in a browser to inspect the coverage results.
 
-**Coverage results:**
+### Coverage results
 
-- Instruction coverage: [add actual result]
-- Branch coverage: [add actual result]
-- Covered instructions: [add actual count]
-- Missed instructions: [add actual count]
+The generated JaCoCo report showed the following results:
 
-Coverage indicates which parts of the code were executed during testing. It does not guarantee that every possible behaviour or edge case has been verified.
+| Metric               |  Coverage |
+| -------------------- | --------: |
+| Instruction coverage |       58% |
+| Branch coverage      |       67% |
+| Covered instructions | 555 / 942 |
+| Covered branches     |   43 / 64 |
+| Covered lines        | 142 / 262 |
+
+### Coverage by package
+
+| Package     | Instruction coverage | Branch coverage |
+| ----------- | -------------------: | --------------: |
+| `io`        |                  60% |             63% |
+| `analysis`  |                  98% |            100% |
+| `model`     |                  58% |             N/A |
+| `default`   |                   0% |              0% |
+| `exception` |                   0% |             N/A |
+
+The `analysis` package has high coverage, including 100% branch coverage. The `io` and `model` packages still have some untested code.
+
+The `default` and `exception` packages show 0% coverage because the CLI integration tests launch the application in separate Java processes. The JaCoCo agent used by Maven does not automatically instrument these child processes. Therefore, these tests verify CLI behaviour, but their execution is not included in the current coverage report.
+
+Coverage indicates which code was executed during testing. It does not guarantee that every possible behaviour or edge case has been verified.
 
 ## Project structure
 
