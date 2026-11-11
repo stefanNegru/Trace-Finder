@@ -6,23 +6,32 @@ TraceFinder is a Java command-line application that reads a log file, checks its
 
 - Java must be installed on your computer.
 - Maven is required to build the project and run the tests.
-- The application is distributed as `tracefinder.jar`.
 
-## Running TraceFinder
+### Building and running
 
-Open a terminal in the project folder and run:
+Build the project using Maven:
+
+```bash
+mvn clean package
+```
+
+The executable JAR is generated in `target/tracefinder.jar`.
 
 **Analyse the entire file:**
 
 ```bash
-java -jar tracefinder.jar logs.txt rules.csv report.txt
+java -jar target/tracefinder.jar logs.txt rules.csv report.txt
 ```
 
 **Analyse a specific time window:**
 
 ```bash
-java -jar tracefinder.jar logs.txt rules.csv report.txt "2024-03-15 02:00:00" "2024-03-15 03:30:00"
+java -jar target/tracefinder.jar logs.txt rules.csv report.txt "2024-03-15 02:00:00" "2024-03-15 03:30:00"
 ```
+
+The timestamp format is `uuuu-MM-dd HH:mm:ss`.
+
+The start timestamp is inclusive, while the end timestamp is exclusive. Entries at the start are included; entries at the end are excluded.
 
 The application accepts either three or five arguments.
 
@@ -37,7 +46,7 @@ The application accepts either three or five arguments.
 The start and end timestamps must follow this format:
 
 ```text
-yyyy-MM-dd HH:mm:ss
+uuuu-MM-dd HH:mm:ss
 ```
 
 For example: `2024-03-15 02:00:00`.

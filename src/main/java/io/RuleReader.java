@@ -70,7 +70,7 @@ public class RuleReader {
 
         } catch (IOException e) {
             throw new RuleFileException(
-                    "Could not read rules file: " + filePath
+                    "Error while reading rules file: " + filePath
                             + ". Reason: " + e.getMessage(),
                     e
             );

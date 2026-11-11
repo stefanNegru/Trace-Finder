@@ -25,7 +25,7 @@ public class LogReader {
             }
         } catch (IOException e) {
             throw new LogFileException(
-                    "Could not read log file: " + filePath
+                    "Error while reading log file: " + filePath
                             + ". Reason: " + e.getMessage(),
                     e
             );

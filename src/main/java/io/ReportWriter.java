@@ -18,7 +18,7 @@ import model.UnknownPattern;
 
 public class ReportWriter {
     private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss");
 
     public static void write(
             String filePath,
