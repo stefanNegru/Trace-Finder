@@ -1,2 +1,0 @@
-0000-03-15 02:21:40 | ALERT | 203.0.113.42 | /var/backups | downloaded
-0001-03-15 02:18:20 | ALERT | 203.0.113.42 | /etc/shadow | read

@@ -102,6 +102,7 @@ class MainTest {
         return tempDir.resolve("report.txt");
     }
 
+    
     private void assertEmptyFindings(String report) {
         assertTrue(report.contains("--- Activity Summary ---"));
         assertTrue(report.contains("--- Flagged Entries ---"));
@@ -109,11 +110,7 @@ class MainTest {
         assertTrue(report.contains("--- Unknown Patterns ---"));
         assertTrue(report.contains("--- Malformed Lines ---"));
 
-        assertTrue(report.contains("INFO:  0"));
-        assertTrue(report.contains("WARN:  0"));
-        assertTrue(report.contains("ERROR:  0"));
-        assertTrue(report.contains("ALERT:  0"));
-
+        assertSectionContains(report, "--- Activity Summary ---", "None found");
         assertSectionContains(report, "--- Flagged Entries ---", "None found");
         assertSectionContains(report, "--- Suspicious Activity by IP ---", "None found");
         assertSectionContains(report, "--- Unknown Patterns ---", "None found");
@@ -124,6 +121,7 @@ class MainTest {
             "Line 3: this is a malformed line"
         );
     }
+
 
     /*private void assertSectionContains(
             String report,

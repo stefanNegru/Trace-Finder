@@ -75,8 +75,9 @@ public class ReportWriter {
         writer.write("--- Activity Summary ---");
         writer.newLine();
 
-        if (summary.isEmpty()) {
+        if (summary.values().stream().allMatch(count -> count == 0)) {
             writer.write("None found");
+            writer.newLine();
         } else {
             for (Map.Entry<String, Integer> entry : summary.entrySet()) {
                 writer.write(entry.getKey() + ":  " + entry.getValue());
